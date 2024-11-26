@@ -3,7 +3,7 @@ import { Slider } from './Slider';
 import { Switch } from './Switch';
 import { Select } from './Select';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Type, ArrowUpDown, TextQuote, AlignLeft, AlignCenter, AlignJustify } from 'lucide-react';
+import { Type, ArrowUpDown, TextQuote } from 'lucide-react';
 
 interface ReadModeSectionProps {
   enabled: boolean;
@@ -13,6 +13,23 @@ interface ReadModeSectionProps {
   lineHeight: number;
   setLineHeight: (height: number) => void;
 }
+
+const fonts = [
+  { value: 'system-ui', label: 'System Default' },
+  { value: 'georgia', label: 'Georgia' },
+  { value: 'times', label: 'Times New Roman' },
+  { value: 'arial', label: 'Arial' },
+  { value: 'verdana', label: 'Verdana' },
+  { value: 'helvetica', label: 'Helvetica' },
+  { value: 'courier', label: 'Courier' }
+];
+
+const themes = [
+  { value: 'default', label: 'Default (White)', bg: '#ffffff', text: '#000000' },
+  { value: 'sepia', label: 'Sepia', bg: '#f4ecd8', text: '#5b4636' },
+  { value: 'dark', label: 'Dark', bg: '#1a1a1a', text: '#e0e0e0' },
+  { value: 'high-contrast', label: 'High Contrast', bg: '#000000', text: '#ffffff' }
+];
 
 export function ReadModeSection({
   enabled,
@@ -25,9 +42,9 @@ export function ReadModeSection({
   const { t } = useLanguage();
   const [font, setFont] = React.useState('system-ui');
   const [letterSpacing, setLetterSpacing] = React.useState(0);
-  const [textAlign, setTextAlign] = React.useState<'left' | 'center' | 'justify'>('left');
+  const [theme, setTheme] = React.useState('default');
   const [isTextOnly, setIsTextOnly] = React.useState(false);
-  const [isLineFocus, setIsLineFocus] = React.useState(false);
+  const [isFocusRead, setIsFocusRead] = React.useState(false);
 
   const handleSettingChange = (settings: any) => {
     const updatedSettings = {
@@ -36,32 +53,34 @@ export function ReadModeSection({
       lineHeight,
       font,
       letterSpacing,
-      textAlign,
+      theme,
       isTextOnly,
-      isLineFocus,
+      isFocusRead,
       ...settings
     };
 
     // Update local state
     if ('font' in settings) setFont(settings.font);
     if ('letterSpacing' in settings) setLetterSpacing(settings.letterSpacing);
-    if ('textAlign' in settings) setTextAlign(settings.textAlign);
+    if ('theme' in settings) setTheme(settings.theme);
     if ('isTextOnly' in settings) setIsTextOnly(settings.isTextOnly);
-    if ('isLineFocus' in settings) setIsLineFocus(settings.isLineFocus);
+    if ('isFocusRead' in settings) setIsFocusRead(settings.isFocusRead);
 
     // Send to content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id!, {
-        action: 'updateReadMode',
-        settings: updatedSettings
-      });
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'updateReadMode',
+          settings: updatedSettings
+        });
+      }
     });
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">{t('readMode.enable')}</label>
+        <label className="text-sm font-medium">Enable Read Mode</label>
         <Switch checked={enabled} onCheckedChange={(checked) => {
           setEnabled(checked);
           handleSettingChange({ enabled: checked });
@@ -74,7 +93,20 @@ export function ReadModeSection({
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Type className="w-4 h-4" />
-                {t('readMode.fontSize')}
+                Font Family
+              </label>
+              <Select
+                options={fonts}
+                value={font}
+                onChange={(value) => handleSettingChange({ font: value })}
+                placeholder="Select font..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Type className="w-4 h-4" />
+                Font Size
               </label>
               <Slider
                 value={[fontSize]}
@@ -86,12 +118,13 @@ export function ReadModeSection({
                 max={32}
                 step={1}
               />
+              <span className="text-sm text-gray-500">{fontSize}px</span>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <ArrowUpDown className="w-4 h-4" />
-                {t('readMode.lineHeight')}
+                Line Height
               </label>
               <Slider
                 value={[lineHeight]}
@@ -103,12 +136,13 @@ export function ReadModeSection({
                 max={2}
                 step={0.1}
               />
+              <span className="text-sm text-gray-500">{lineHeight}x</span>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <TextQuote className="w-4 h-4" />
-                {t('readMode.letterSpacing')}
+                Letter Spacing
               </label>
               <Slider
                 value={[letterSpacing]}
@@ -117,10 +151,21 @@ export function ReadModeSection({
                 max={5}
                 step={0.5}
               />
+              <span className="text-sm text-gray-500">{letterSpacing}px</span>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Theme</label>
+              <Select
+                options={themes}
+                value={theme}
+                onChange={(value) => handleSettingChange({ theme: value })}
+                placeholder="Select theme..."
+              />
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">{t('readMode.textOnly')}</label>
+              <label className="text-sm font-medium">Text Only Mode</label>
               <Switch
                 checked={isTextOnly}
                 onCheckedChange={(checked) => handleSettingChange({ isTextOnly: checked })}
@@ -128,10 +173,10 @@ export function ReadModeSection({
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">{t('readMode.lineFocus')}</label>
+              <label className="text-sm font-medium">Focus Read Mode</label>
               <Switch
-                checked={isLineFocus}
-                onCheckedChange={(checked) => handleSettingChange({ isLineFocus: checked })}
+                checked={isFocusRead}
+                onCheckedChange={(checked) => handleSettingChange({ isFocusRead: checked })}
               />
             </div>
           </div>

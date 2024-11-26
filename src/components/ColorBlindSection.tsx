@@ -19,14 +19,22 @@ export function ColorBlindSection({
 
   const handleModeChange = (mode: string) => {
     setActiveMode(mode);
+    sendMessageToContentScript(mode, siteEnabled);
+  };
+
+  const handleSiteToggle = (enabled: boolean) => {
+    setSiteEnabled(enabled);
+    sendMessageToContentScript(activeMode, enabled);
+  };
+
+  const sendMessageToContentScript = (mode: string, enabled: boolean) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id!, {
-        action: 'updateColorBlind',
-        settings: {
-          mode,
-          enabled: siteEnabled
-        }
-      });
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'updateColorBlind',
+          settings: { mode, enabled }
+        });
+      }
     });
   };
 
@@ -94,7 +102,10 @@ export function ColorBlindSection({
       <div className="site-settings bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div className="flex items-center justify-between">
           <label className="text-sm font-medium">{t('site.enable')}</label>
-          <Switch checked={siteEnabled} onCheckedChange={setSiteEnabled} />
+          <Switch 
+            checked={siteEnabled} 
+            onCheckedChange={handleSiteToggle}
+          />
         </div>
       </div>
     </div>

@@ -1,33 +1,25 @@
 /* Base styles for accessibility features */
-#accessibility-content-wrapper {
-  transition: all 0.3s ease;
-}
-
 #accessibility-magnifier {
   backdrop-filter: blur(2px);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
-#accessibility-magnifier-content {
-  transform-origin: center center;
-  transition: transform 0.1s ease-out;
+#accessibility-magnifier * {
+  pointer-events: none !important;
 }
 
-/* Line focus styles */
-#accessibility-content-wrapper p,
-#accessibility-content-wrapper li {
-  position: relative;
+/* Ensure the filter doesn't affect extension popup */
+html {
+  transition: filter 0.3s ease;
 }
 
-#accessibility-content-wrapper p:hover::after,
-#accessibility-content-wrapper li:hover::after {
-  content: '';
-  position: absolute;
-  left: -20px;
-  right: -20px;
+/* Custom styles for the color blind overlay */
+.color-blind-overlay {
+  position: fixed;
   top: 0;
-  bottom: 0;
-  background: rgba(0, 122, 255, 0.1);
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 2147483647;
 }
