@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Color blind filters as CSS variables */
+  --protanopia-filter: url(#protanopia);
+  --deuteranopia-filter: url(#deuteranopia);
+  --tritanopia-filter: url(#tritanopia);
+  --monochromacy-filter: grayscale(100%);
+  --protanomaly-filter: url(#protanomaly);
+  --deuteranomaly-filter: url(#deuteranomaly);
+  --tritanomaly-filter: url(#tritanomaly);
+  --achromatomaly-filter: grayscale(50%);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Ensure filter transitions are smooth */
+html {
+  transition: filter 0.3s ease;
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Blind Mode</title>
+  <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="icons/icon48.png" alt="Color Blind Mode">
+        <h1>Color Blind Mode</h1>
+      </div>
+      <button id="darkModeToggle" class="icon-button" aria-label="Toggle Dark Mode">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="vision-modes">
+        <button class="mode-button active" data-mode="normal">
+          <span class="mode-icon">👁️</span>
+          <span class="mode-name">Normal</span>
+        </button>
+        <button class="mode-button" data-mode="protanopia">
+          <span class="mode-icon">🔴</span>
+          <span class="mode-name">Protanopia</span>
+        </button>
+        <button class="mode-button" data-mode="deuteranopia">
+          <span class="mode-icon">🟢</span>
+          <span class="mode-name">Deuteranopia</span>
+        </button>
+        <button class="mode-button" data-mode="tritanopia">
+          <span class="mode-icon">🔵</span>
+          <span class="mode-name">Tritanopia</span>
+        </button>
+        <button class="mode-button" data-mode="monochromacy">
+          <span class="mode-icon">⚫</span>
+          <span class="mode-name">Monochromacy</span>
+        </button>
+        <button class="mode-button" data-mode="protanomaly">
+          <span class="mode-icon">🌅</span>
+          <span class="mode-name">Protanomaly</span>
+        </button>
+        <button class="mode-button" data-mode="deuteranomaly">
+          <span class="mode-icon">🌄</span>
+          <span class="mode-name">Deuteranomaly</span>
+        </button>
+        <button class="mode-button" data-mode="tritanomaly">
+          <span class="mode-icon">🌊</span>
+          <span class="mode-name">Tritanomaly</span>
+        </button>
+        <button class="mode-button" data-mode="achromatomaly">
+          <span class="mode-icon">🌫️</span>
+          <span class="mode-name">Achromatomaly</span>
+        </button>
+      </div>
+
+      <div class="preview-section">
+        <h2>Preview</h2>
+        <div class="preview-container">
+          <div class="color-strip"></div>
+          <img src="https://images.unsplash.com/photo-1490730141103-6cac27aaab94" 
+               alt="Preview Image" 
+               class="preview-image">
+        </div>
+      </div>
+
+      <div class="site-settings">
+        <h2>Site Settings</h2>
+        <label class="switch">
+          <input type="checkbox" id="siteToggle">
+          <span class="slider"></span>
+          <span class="label">Enable for this site</span>
+        </label>
+      </div>
+    </main>
+
+    <footer>
+      <div class="shortcuts">
+        <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
+        <span>Toggle Extension</span>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="js/popup.js"></script>
+</body>
+</html>

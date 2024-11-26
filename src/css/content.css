@@ -1,0 +1,33 @@
+/* Base styles for accessibility features */
+#accessibility-content-wrapper {
+  transition: all 0.3s ease;
+}
+
+#accessibility-magnifier {
+  backdrop-filter: blur(2px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+#accessibility-magnifier-content {
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+}
+
+/* Line focus styles */
+#accessibility-content-wrapper p,
+#accessibility-content-wrapper li {
+  position: relative;
+}
+
+#accessibility-content-wrapper p:hover::after,
+#accessibility-content-wrapper li:hover::after {
+  content: '';
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 122, 255, 0.1);
+  pointer-events: none;
+  z-index: -1;
+}
